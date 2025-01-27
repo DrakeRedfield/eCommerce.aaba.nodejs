@@ -2,6 +2,9 @@ import express, { Express } from 'express';
 import dotenv from 'dotenv';
 import exampleRoutes from './app/example-app/example-app.routes';
 import helmet from 'helmet';
+// DB
+import postgresService from './db/config'
+// Logger
 import { loggingUUID, setUUID } from './utils/middleware/logger/uuid';
 import { loggingResponse } from './utils/middleware/logger/logger.middleware';
 import morgan from 'morgan';
@@ -19,8 +22,10 @@ app.use(helmet());
 app.use(setUUID);
 app.use(loggingUUID);
 app.use(loggingResponse);
-// Morgan logging
 app.use(morgan(process.env.MORGAN_STRING as any, { stream: logger.stream as any }));
+
+// DB
+postgresService.connectDB();
 
 app.use('/example-route', exampleRoutes);
 
