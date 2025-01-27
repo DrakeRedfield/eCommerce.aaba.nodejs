@@ -9,7 +9,7 @@ export class User extends BaseEntity {
   @Column({ type: 'text' })
   lastName: string;
 
-  @Column({ type: 'text' })
+  @Column({ type: 'text', unique: true })
   email: string;
 
   @Column({ type: 'text', select: false })
