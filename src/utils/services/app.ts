@@ -4,18 +4,18 @@ import helmet from 'helmet';
 import cors from 'cors';
 import http from 'http';
 // Logger
-import { loggingUUID, setUUID } from '../../utils/middleware/logger/uuid';
 import { loggingResponse } from '../../utils/middleware/logger/logger.middleware';
-import morgan from 'morgan';
+import { loggingUUID, setUUID } from '../../utils/middleware/logger/uuid';
 import { logger } from '../../utils/services/winston';
+import morgan from 'morgan';
 // Graphql
-import { ApolloServer } from '@apollo/server';
-import { resolvers } from '../../graphql/config/resolvers';
-import { typeDefs } from '../../graphql/config/typedef';
-import { expressMiddleware } from '@apollo/server/express4';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import { resolvers } from '../../graphql/config/resolvers';
+import { expressMiddleware } from '@apollo/server/express4';
+import { typeDefs } from '../../graphql/config/typedef';
+import { ApolloServer } from '@apollo/server';
 // DB
-import postgresService from '../../db/config'
+import postgresService from '../../db/config';
 
 dotenv.config();
 
@@ -29,10 +29,9 @@ export const runApp = async () => {
   addMiddleware(app);
   configGraphql(app, httpServer);
 
-  await new Promise<void>((resolve) =>
-    httpServer.listen({ port: 4000 }, resolve),
-  );
-  logger.info(`⚡️[server]: Server is running at https://localhost:${port}`);
+  httpServer.listen({ port }, () => {
+    logger.info(`⚡️[server]: Server is running at https://localhost:${port}`);
+  });
 }
 
 const addMiddleware = (app: express.Express) => {
