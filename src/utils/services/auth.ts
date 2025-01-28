@@ -24,3 +24,12 @@ export const signJWTSession = (user: Partial<User> | Partial<Customer>) => {
     expireIn: 3600000 * expirationTime // expireIn MS
   }
 }
+
+export const getDecodedPayloadJWT = (token: string) => {
+  return jwt.verify(token, process.env.JWT_SECRET_KEY || '');
+}
+
+export const requireAdminAuth = (resolver: any) => (_parent: any, args: any, _context: any, _info: any) => {
+  if(!_context.user) throw new Error('Unauthorized');
+  return resolver(_parent, args, _context, _info);
+}

@@ -4,6 +4,12 @@ export interface IRequest extends Request {
   uuid?: string;
   logger?: ILogger;
   winston?: ILogger;
+  user?: {
+    id: number;
+    email: string;
+    name: string;
+    lastName: string;
+  }
 }
 
 export interface IResponse extends Response {

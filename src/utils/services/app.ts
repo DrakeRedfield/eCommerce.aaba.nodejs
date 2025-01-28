@@ -17,6 +17,8 @@ import { ApolloServer } from '@apollo/server';
 // DB
 import postgresService from '../../db/config';
 import { IRequest } from '../interfaces/express';
+import { authAdminMiddleware } from '../middleware/auth';
+import { allowedMessageError } from '../constant/error';
 
 dotenv.config();
 
@@ -41,6 +43,7 @@ const addMiddleware = (app: express.Express) => {
   app.use(loggingUUID);
   app.use(loggingResponse);
   app.use(morgan(process.env.MORGAN_STRING as any, { stream: logger.stream as any }));
+  app.use(authAdminMiddleware);
 }
 
 const configGraphql = async (app: express.Express, httpServer: http.Server) => {
@@ -49,7 +52,7 @@ const configGraphql = async (app: express.Express, httpServer: http.Server) => {
     typeDefs,
     resolvers,
     formatError: (error) => {
-      if (error.message === 'Invalid credentials')
+      if (allowedMessageError.indexOf(error.message) >= 0)
         return { message: error.message }
       if (isProduction)
         return { message: 'An unexpected error occurred. Please contact an admin.'}
@@ -82,7 +85,7 @@ const configGraphql = async (app: express.Express, httpServer: http.Server) => {
     express.json(),
     expressMiddleware(server, {
       context: async ({ req }: { req: IRequest }) => ({
-        token: req.headers.token,
+        user: req.user || null,
         requestId: req.uuid
       }),
     }),
