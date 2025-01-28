@@ -1,4 +1,5 @@
 import { productSchemas } from "../../app/products/schemas";
+import { userSchemas } from "../../app/user/schemas";
 
 export const typeDefs = [
   `#graphql
@@ -10,4 +11,5 @@ export const typeDefs = [
     }
   `,
   ...productSchemas,
+  ...userSchemas
 ];

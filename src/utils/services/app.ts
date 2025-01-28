@@ -49,6 +49,8 @@ const configGraphql = async (app: express.Express, httpServer: http.Server) => {
     typeDefs,
     resolvers,
     formatError: (error) => {
+      if (error.message === 'Invalid credentials')
+        return { message: error.message }
       if (isProduction)
         return { message: 'An unexpected error occurred. Please contact an admin.'}
       return error;
