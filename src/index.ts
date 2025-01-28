@@ -1,6 +1,5 @@
 import express, { Express } from 'express';
 import dotenv from 'dotenv';
-import exampleRoutes from './app/example-app/example-app.routes';
 import helmet from 'helmet';
 // DB
 import postgresService from './db/config'
@@ -26,8 +25,6 @@ app.use(morgan(process.env.MORGAN_STRING as any, { stream: logger.stream as any 
 
 // DB
 postgresService.connectDB();
-
-app.use('/example-route', exampleRoutes);
 
 app.listen(port, () => {
   logger.info(`⚡️[server]: Server is running at https://localhost:${port}`);
