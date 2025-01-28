@@ -9,5 +9,5 @@ export const typeDefs = [
       prev: Int
     }
   `,
-  ...productSchemas
+  ...productSchemas,
 ];
