@@ -104,3 +104,114 @@ Run test with the following command:
 ```
 npm run test
 ```
+## Resources
+### Postman
+Here you can download a json file that you could import into Postman
+
+[Download eCommerce Postman Documentation](https://drive.google.com/file/d/1a0YHqbSOGwOEX8wcFLMFAQRnKnz86Ms-/view?usp=sharing)
+
+### Graphql Queries
+#### Login Admin
+```graphql
+mutation LoginAdmin($email: String!, $password: String!) {
+    loginUserAdmin(email: $email, password: $password){
+        token
+        expireIn
+        user {
+            id
+            name
+            lastName
+            email
+        }
+    }
+}
+```
+
+#### Get Products
+```graphql
+query GetProducts($page: Int!) {
+    products(page: $page){
+        data {
+            id
+            name
+            description
+            image
+            price
+        }
+        count
+        currentPage
+        lastPage
+        nextPage
+        prevPage
+    }
+}
+```
+
+#### Get Product
+```graphql
+query GetProduct($id: Int!) {
+    product(id: $id){
+        id
+        name
+        description
+        image
+        price
+    }
+}
+```
+
+#### Create Product
+**Authorization Header** must be included in the request
+```graphql
+mutation CreateProduct($product: CreateProductInput!) {
+    createProduct(product: $product){
+        id
+        name
+        description
+        image
+        price
+    }
+}
+```
+**Example of variable**
+```json
+{
+    "product": {
+        "name": "RD-05",
+        "description": "Hot Wheel Acceleracer - RD-05, Drone",
+        "image": "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/8a7cf4fe-7767-45be-a4e8-db648968c0ef/depcuoy-27f2d836-f7d6-4963-b1fe-c76aee98d9ce.png/v1/fill/w_1192,h_670,q_70,strp/acceleracers_rd_05_by_valkenvugen_depcuoy-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MTA4MCIsInBhdGgiOiJcL2ZcLzhhN2NmNGZlLTc3NjctNDViZS1hNGU4LWRiNjQ4OTY4YzBlZlwvZGVwY3VveS0yN2YyZDgzNi1mN2Q2LTQ5NjMtYjFmZS1jNzZhZWU5OGQ5Y2UucG5nIiwid2lkdGgiOiI8PTE5MjAifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.2bo1XL3LWff4rj57ZH2Z0yR4ssqjIbuOVptlHrf7ryE",
+        "price": 12
+    }
+}
+```
+
+#### Update Product
+**Authorization Header** must be included in the request
+```graphql
+mutation UpdateProduct($product: UpdateProductInput!) {
+    updateProduct(product: $product){
+        id
+        name
+        description
+        image
+        price
+    }
+}
+```
+**Example of variable**
+```json
+{
+    "product": {
+        "id": 10,
+        "price": 14.5
+    }
+}
+```
+
+#### Delete Product
+**Authorization Header** must be included in the request
+```graphql
+mutation DeleteProduct($id: Int!) {
+    deleteProduct(id: $id)
+}
+```
