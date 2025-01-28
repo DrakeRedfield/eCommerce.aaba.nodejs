@@ -36,7 +36,13 @@ export const loggingResponse = (req: IRequest, res: IResponse, next: NextFunctio
 
 
 export const errorHandlerMiddleware = (err: Error, req: IRequest, res: IResponse, next: NextFunction) => {
-  req.logger?.error(err.stack || 'Issue not detected by ErrorHandler');
+  if (typeof err === 'string') {
+    req.logger?.error(err);
+  }
+  if (err instanceof Error) {
+    req.logger?.error(err.message);
+    req.logger?.error(err.stack || 'No stack for this error');
+  }
   res.status(500).json({
     message: 'Something went wrong! Please, contact an admin.'
   })
