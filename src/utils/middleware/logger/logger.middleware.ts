@@ -13,11 +13,7 @@ export const excludeLogParams: {[key: string]: boolean} = {
  * @param {function} next Express next fucntion
  */
 export const loggingPath = (req: IRequest, res: IResponse, next: NextFunction) => {
-  req.logger?.info(
-    `${req.ip} ${req.protocol} ${req.method} ${req.originalUrl} ${req.headers['user-agent']}`);
-  if (Object.keys(req.query).length && !excludeLogParams[req.originalUrl]) req.logger?.info(`Query: ${JSON.stringify(req.query)}`);
-  if (Object.keys(req.body).length && !excludeLogParams[req.originalUrl]) req.logger?.info(`Body: ${JSON.stringify(req.body)}`);
-  if (Object.keys(req.params).length && !excludeLogParams[req.originalUrl]) req.logger?.info(`Params: ${JSON.stringify(req.params)}`);
+  req.logger?.info(`${req.ip} ${req.protocol} ${req.method} ${req.originalUrl} ${req.headers['user-agent']}`);
   next();
 };
 

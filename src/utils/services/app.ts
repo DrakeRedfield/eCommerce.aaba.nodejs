@@ -16,6 +16,7 @@ import { typeDefs } from '../../graphql/config/typedef';
 import { ApolloServer } from '@apollo/server';
 // DB
 import postgresService from '../../db/config';
+import { IRequest } from '../interfaces/express';
 
 dotenv.config();
 
@@ -43,10 +44,34 @@ const addMiddleware = (app: express.Express) => {
 }
 
 const configGraphql = async (app: express.Express, httpServer: http.Server) => {
+  const isProduction = process.env.ENV === 'prod';
   const server = new ApolloServer({
     typeDefs,
     resolvers,
-    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })]
+    formatError: (error) => {
+      if (isProduction)
+        return { message: 'An unexpected error occurred. Please contact an admin.'}
+      return error;
+    },
+    plugins: [
+      ApolloServerPluginDrainHttpServer({ httpServer }),
+      {
+        async requestDidStart(requestContext) {
+          const { requestId } = requestContext.contextValue as any;
+          logger.info(`[${requestId}] GraphQL Request started: ${JSON.stringify(requestContext.request.query)}`);
+          
+          return {
+            async didEncounterErrors(requestContext) {
+              logger.error(`[${requestId}] GraphQL Errors: ${JSON.stringify(requestContext.errors)}`);
+            },
+            async willSendResponse(responseContext) {
+              logger.info(`[${requestId}] GraphQL Response: ${JSON.stringify(responseContext.response)}`);
+            },
+          };
+        },
+      }
+
+    ]
   });
   await server.start();
   app.use(
@@ -54,7 +79,10 @@ const configGraphql = async (app: express.Express, httpServer: http.Server) => {
     cors<cors.CorsRequest>(),
     express.json(),
     expressMiddleware(server, {
-      context: async ({ req }) => ({ token: req.headers.token }),
+      context: async ({ req }: { req: IRequest }) => ({
+        token: req.headers.token,
+        requestId: req.uuid
+      }),
     }),
   );
 }

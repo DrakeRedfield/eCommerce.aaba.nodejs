@@ -13,7 +13,7 @@ export const getProducts = ({ page }: { page: number }) => {
 
 export const getProduct = ({ id }: { id: number }) => {
   const repository = postgresService.getRepository(Product);
-  return repository.findOne({ where: { id } });
+  return repository.findOneOrFail({ where: { id } });
 }
 
 export const createProduct = (data: Partial<Product>) => {
@@ -28,8 +28,7 @@ export const createProduct = (data: Partial<Product>) => {
 
 export const updateProduct = async (data: Partial<Product>) => {
   const repository = postgresService.getRepository(Product);
-  const product = await repository.findOneBy({id: data.id});
-  if(!product) return null;
+  const product = await repository.findOneByOrFail({id: data.id});
   product.image = data.image || product.image;
   product.description = data.description || product.description;
   product.name = data.name || product.name;
@@ -39,7 +38,7 @@ export const updateProduct = async (data: Partial<Product>) => {
 
 export const deleteProduct = async (data: Partial<Product>) => {
   const repository = postgresService.getRepository(Product);
-  const product = await repository.findOneBy({ id: data.id });
+  const product = await repository.findOneByOrFail({ id: data.id });
   if (!product) return null;
   const result = await repository.softDelete({id: data.id});
   if(!result.affected) return null;
